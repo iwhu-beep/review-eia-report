@@ -17,7 +17,7 @@ scripts/
   extract_docx.py   # docx/pdf 文本提取脚本
   verify_standards.py # 标准时效初筛脚本（本地库，需官网复核）
   export_pdf.py     # 审核意见md转PDF（中文，需fpdf2）
-  standards_db.json # 标准库（34项，更新日期见_meta.updated）
+  standards_db.json # 标准库（42项，更新日期见_meta.updated）
   requirements.txt  # Python 依赖
 examples/
   audit_example.md  # 输出示例
@@ -57,5 +57,8 @@ python scripts/export_pdf.py 审核意见.md --out 审核意见.pdf
 
 ## 版本
 
+v2.6.0（2026-09）：生态环境法典施行，10部单行法废止，编制依据与过渡规则更新。
+v2.5.2（2026-09）：全量复核标准政策（新增施工噪声/污水厂修改单/排污许可新规）。
+v2.5.1（2026-09）：危废名录2025与GB3095-2026纠错。
 v2.5.0（2026-09）：PDF归档升级+四级缺陷制与总评结论+扫描预检与生态分支+三处强声明+脚本异常加固与章节切分。
 v2.4.0（2026-09）：设备防遗漏核查（三对照+行业设备矩阵）。详见 CHANGELOG。

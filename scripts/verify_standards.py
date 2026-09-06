@@ -34,8 +34,9 @@ CATALOG2_RE = re.compile(r"产业结构调整指导目录[（(]?(\d{4})?年?本?
 
 
 def norm(code):
-    """归一化：去空格、全角转半角、大写。"""
+    """归一化：去空格、全角转半角（破折号/括号/斜杠）、大写。"""
     code = code.replace("（", "(").replace("）", ")").replace("／", "/")
+    code = code.replace("—", "-").replace("–", "-").replace("－", "-")
     code = re.sub(r"\s+", "", code).upper()
     return code
 
@@ -57,6 +58,7 @@ def load_db(db_path):
 
 
 def extract_candidates(text):
+    text = text.replace("—", "-").replace("–", "-").replace("－", "-")  # 报告常用破折号写标准号
     found = []  # (原文写法, 归一化, 类型)
     for m in STD_RE.finditer(text):
         raw = m.group(1)
@@ -81,7 +83,12 @@ def check_one(raw, code, kind, db_index):
         c.isdigit() for c in code
     )
     if kind == "catalog":
-        key = "危废名录2021" if "2021" in code else ("危废名录2016" if "2016" in code else "危废名录?")
+        if "2025" in code:
+            key = "危废名录2025"
+        elif "2021" in code or "2016" in code:
+            key = "危废名录2021" if "2021" in code else "危废名录2016"
+        else:
+            key = "危废名录?"
     elif kind == "catalog2":
         key = None
         if "2024" in code:
