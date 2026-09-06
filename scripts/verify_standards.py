@@ -41,8 +41,19 @@ def norm(code):
 
 
 def load_db(db_path):
-    with open(db_path, "r", encoding="utf-8") as f:
-        return json.load(f)
+    try:
+        with open(db_path, "r", encoding="utf-8") as f:
+            db = json.load(f)
+    except json.JSONDecodeError as exc:
+        eprint(f"错误：标准库 JSON 损坏 {db_path}（{exc}），请重新拉取仓库版本。")
+        sys.exit(2)
+    except OSError as exc:
+        eprint(f"错误：标准库读取失败 {db_path}（{exc}）")
+        sys.exit(2)
+    if not isinstance(db.get("standards", []), list):
+        eprint(f"错误：标准库结构异常 {db_path}（缺 standards 数组）")
+        sys.exit(2)
+    return db
 
 
 def extract_candidates(text):
@@ -135,8 +146,20 @@ def main(argv=None):
     db = load_db(db_path)
     db_index = {norm(s["code"]): s for s in db.get("standards", [])}
 
-    with open(args.input, "r", encoding="utf-8") as f:
-        text = f.read()
+    try:
+        with open(args.input, "r", encoding="utf-8") as f:
+            text = f.read()
+    except UnicodeDecodeError:
+        try:
+            with open(args.input, "r", encoding="gb18030") as f:
+                text = f.read()
+            eprint("提示：输入文件按 GBK 编码读取。")
+        except Exception as exc:
+            eprint(f"错误：输入文件读取失败 {args.input}（{exc}）")
+            sys.exit(2)
+    except OSError as exc:
+        eprint(f"错误：输入文件读取失败 {args.input}（{exc}）")
+        sys.exit(2)
     cands = extract_candidates(text)
     if not cands:
         eprint("提示：未识别到任何标准号（GB/HJ/名录/目录），请确认输入的是报告文本。")
@@ -145,12 +168,22 @@ def main(argv=None):
 
     output = json.dumps({"results": results}, ensure_ascii=False, indent=2) if args.format == "json" else to_markdown(results)
     if args.out:
-        with open(args.out, "w", encoding="utf-8") as f:
-            f.write(output)
+        try:
+            with open(args.out, "w", encoding="utf-8") as f:
+                f.write(output)
+        except OSError as exc:
+            eprint(f"错误：结果文件写入失败 {args.out}（{exc}）")
+            sys.exit(2)
         print(f"已写入：{args.out}（{len(results)}项）")
     else:
         print(output)
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception:
+        import traceback
+        eprint("错误：核验过程异常：")
+        eprint(traceback.format_exc(limit=3))
+        sys.exit(3)

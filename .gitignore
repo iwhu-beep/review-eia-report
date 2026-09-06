@@ -4,4 +4,8 @@ __pycache__/
 extracted.json
 test_out.*
 test_sample.docx
+*_test.*
+*_sample.*
+*_check.md
+*_chapters/
 *.tmp.docx

@@ -1,5 +1,9 @@
 # review-eia-report · 建设项目环境影响报告表审核 Skill
 
+> ⚠️ **风险声明**：本工具为 AI 辅助审核，不能替代注册环境影响评价工程师的专业判断和法定审批程序；
+> 所有审核意见（含缺陷分级与总评结论）必须经人工复核确认后方可作为整改或报批依据；
+> 法规标准状态以生态环境部、市场监管总局官网现行版本为准。
+
 审核建设项目环境影响报告表（环评报告表），输出结构化审核意见清单。
 兼容 Qoder / Claude Code / Codex / OpenCode。
 
@@ -25,8 +29,14 @@ CHANGELOG.md        # 变更记录
 ```bash
 pip install -r scripts/requirements.txt
 
+# PDF 先做扫描预检（退出码4=疑似扫描件，先OCR）
+python scripts/extract_docx.py 报告.pdf --scan-check
+
 # 提取报告文本
 python scripts/extract_docx.py "建设项目环境影响报告表.docx"
+
+# 长文档按章节切分（分块审核，表格章单独完整载入）
+python scripts/extract_docx.py "报告.docx" --split-chapters --split-out chaps/
 
 # JSON 输出（对接系统）
 python scripts/extract_docx.py "报告.docx" --format json --out extracted.json
@@ -47,6 +57,5 @@ python scripts/export_pdf.py 审核意见.md --out 审核意见.pdf
 
 ## 版本
 
-v2.4.0（2026-09）：设备防遗漏核查（三对照+行业设备矩阵）。
-v2.3.0（2026-09）：审核意见一键导出中文PDF。
-v2.2.0（2026-09）：按污染影响类编制技术指南审核、标准时效初筛+联网核验。详见 CHANGELOG。
+v2.5.0（2026-09）：PDF归档升级+四级缺陷制与总评结论+扫描预检与生态分支+三处强声明+脚本异常加固与章节切分。
+v2.4.0（2026-09）：设备防遗漏核查（三对照+行业设备矩阵）。详见 CHANGELOG。
