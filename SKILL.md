@@ -145,6 +145,12 @@ python scripts/verify_standards.py extracted.md --format json --out std_check.js
 ### 第 5 步：输出审核意见
 
 同时输出 Markdown（给人读）+ JSON（给程序用）。默认先给 Markdown，用户要对接系统时再给 JSON。
+需存档/送审时，最后导出 PDF：
+
+```bash
+# 先把审核意见存为 md，再转 PDF（中文字体自动发现，特殊符号自动转文字）
+python scripts/export_pdf.py 审核意见.md --out 审核意见.pdf
+```
 
 **Markdown 模板：**
 
@@ -232,4 +238,5 @@ python scripts/verify_standards.py extracted.md --format json --out std_check.js
 - 法规政策参考（附现行状态/实施日期）：[regulations.md](regulations.md)
 - 文本提取脚本：`scripts/extract_docx.py`，依赖见 `scripts/requirements.txt`
 - 标准时效初筛：`scripts/verify_standards.py` + 本地库 `scripts/standards_db.json`（官网复核方法见 [regulations.md](regulations.md) 第十二节）
+- 审核意见导出 PDF：`scripts/export_pdf.py`（依赖 fpdf2，中文字体自动发现）
 - 变更记录：[CHANGELOG.md](CHANGELOG.md)

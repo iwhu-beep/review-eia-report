@@ -12,6 +12,7 @@ regulations.md      # 法规标准参考（截至2026-09，附现行状态与实
 scripts/
   extract_docx.py   # docx/pdf 文本提取脚本
   verify_standards.py # 标准时效初筛脚本（本地库，需官网复核）
+  export_pdf.py     # 审核意见md转PDF（中文，需fpdf2）
   standards_db.json # 标准库（34项，更新日期见_meta.updated）
   requirements.txt  # Python 依赖
 examples/
@@ -32,6 +33,9 @@ python scripts/extract_docx.py "报告.docx" --format json --out extracted.json
 
 # 标准时效初筛（疑似过期/未知须官网复核）
 python scripts/verify_standards.py extracted.md --out std_check.md
+
+# 审核意见导出 PDF（存档/送审）
+python scripts/export_pdf.py 审核意见.md --out 审核意见.pdf
 ```
 
 然后把提取文本 + `SKILL.md` 工作流一起交给模型，按第 0→5 步执行审核。
@@ -43,4 +47,5 @@ python scripts/verify_standards.py extracted.md --out std_check.md
 
 ## 版本
 
-v2.2.0（2026-09）：按污染影响类编制技术指南审核（第零节+专项判定）、标准时效初筛脚本+联网核验流程、第4节专项/非专项分流。详见 CHANGELOG。
+v2.3.0（2026-09）：审核意见一键导出中文PDF。
+v2.2.0（2026-09）：按污染影响类编制技术指南审核、标准时效初筛+联网核验。详见 CHANGELOG。
