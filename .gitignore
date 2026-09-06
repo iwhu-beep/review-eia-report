@@ -1,3 +1,7 @@
 __pycache__/
 *.pyc
 .env
+extracted.json
+test_out.*
+test_sample.docx
+*.tmp.docx
