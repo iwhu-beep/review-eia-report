@@ -32,6 +32,18 @@ def eprint(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
 
 
+def safe_print(text):
+    """控制台编码兜底（GBK 下 ³/² 等字符会炸 print，改走 UTF-8 字节流）。"""
+    try:
+        print(text)
+    except UnicodeEncodeError:
+        try:
+            sys.stdout.buffer.write((text + "\n").encode("utf-8", errors="replace"))
+            sys.stdout.buffer.flush()
+        except Exception:
+            print(text.encode(errors="replace"))
+
+
 def load_docx(path):
     try:
         from docx import Document
@@ -394,7 +406,7 @@ def main(argv=None):
                 return 2
             print(f"已写入：{args.out}（{len(output)}字符）")
         else:
-            print(output)
+            safe_print(output)
         if data.get("meta", {}).get("scan_suspected"):
             return 4  # 疑似扫描件：给出告警退出码，提醒 OCR
         return 0

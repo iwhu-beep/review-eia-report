@@ -23,9 +23,21 @@ def eprint(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
 
 
-# GB/HJ 标准号：GB 16297-1996、GB/T 31962-2015、HJ 2.2-2018、HJ 169-2018
+def safe_print(text):
+    """控制台编码兜底（GBK 下 ³/² 等字符会炸 print，改走 UTF-8 字节流）。"""
+    try:
+        print(text)
+    except UnicodeEncodeError:
+        try:
+            sys.stdout.buffer.write((text + "\n").encode("utf-8", errors="replace"))
+            sys.stdout.buffer.flush()
+        except Exception:
+            print(text.encode(errors="replace"))
+
+
+# GB/HJ/DB 标准号：GB 16297-1996、GB/T 31962-2015、HJ 2.2-2018、DB32/4041-2021、DB32/T 3462-2020
 STD_RE = re.compile(
-    r"(GB(?:/T)?\s*\d{4,5}(?:\.\d+)?(?:\s*-\s*\d{4})?|HJ\s*\d+(?:\.\d+)?(?:\s*-\s*\d{4})?)"
+    r"(GB(?:/T)?\s*\d{4,5}(?:\.\d+)?(?:\s*-\s*\d{4})?|HJ\s*\d+(?:\.\d+)?(?:\s*-\s*\d{4})?|DB\s*32\s*(?:/\s*(?:T\s*)?)?\d+(?:\s*-\s*\d{4})?)"
 )
 # 国家危险废物名录（2021年版）/ 2016版 / 无年号
 CATALOG_RE = re.compile(r"国家危险废物名录[（(]?(\d{4})?年?版?[）)]?")
@@ -183,7 +195,7 @@ def main(argv=None):
             sys.exit(2)
         print(f"已写入：{args.out}（{len(results)}项）")
     else:
-        print(output)
+        safe_print(output)
 
 
 if __name__ == "__main__":

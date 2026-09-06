@@ -17,7 +17,7 @@ scripts/
   extract_docx.py   # docx/pdf 文本提取脚本
   verify_standards.py # 标准时效初筛脚本（本地库，需官网复核）
   export_pdf.py     # 审核意见md转PDF（中文，需fpdf2）
-  standards_db.json # 标准库（42项，更新日期见_meta.updated）
+  standards_db.json # 标准库（87项：通用+行业+江苏DB32，更新日期见_meta.updated）
   requirements.txt  # Python 依赖
 examples/
   audit_example.md  # 输出示例
@@ -57,6 +57,8 @@ python scripts/export_pdf.py 审核意见.md --out 审核意见.pdf
 
 ## 版本
 
+v2.8.0（2026-09）：江苏DB32地标11项入库+verify支持DB识别+控制台编码加固。
+v2.7.0（2026-09）：34项行业排放标准入库（76项）+行业适用速查表。
 v2.6.1（2026-09）：输出末尾加错误清单汇总表（只列缺陷+整改复核列）。
 v2.6.0（2026-09）：生态环境法典施行，10部单行法废止，编制依据与过渡规则更新。
 v2.5.2（2026-09）：全量复核标准政策（新增施工噪声/污水厂修改单/排污许可新规）。

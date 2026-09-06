@@ -54,6 +54,18 @@ def eprint(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
 
 
+def safe_print(text):
+    """控制台编码兜底（GBK 下特殊字符会炸 print，改走 UTF-8 字节流）。"""
+    try:
+        print(text)
+    except UnicodeEncodeError:
+        try:
+            sys.stdout.buffer.write((text + "\n").encode("utf-8", errors="replace"))
+            sys.stdout.buffer.flush()
+        except Exception:
+            print(text.encode(errors="replace"))
+
+
 def safe_text(text):
     for k, v in GLYPH_FALLBACK.items():
         text = text.replace(k, v)
@@ -422,7 +434,7 @@ def main(argv=None):
         except RuntimeError as exc:
             eprint(f"错误：{exc}")
             return 2
-        print(f"已生成：{out}（编码{encoding}，字体{os.path.basename(font_path)}）")
+        safe_print(f"已生成：{out}（编码{encoding}，字体{os.path.basename(font_path)}）")
         return 0
     except Exception:
         eprint("错误：导出过程异常：")
